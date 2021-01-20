@@ -105,15 +105,15 @@ $(document).ready(function() {
         submitAddForm(true);
     })
 
-    $('input#question, textarea#question').characterCounter();
+    $('input#question, textarea#question, textarea#message').characterCounter();
 });
 
 
 function editMessage() {
     $("#message").hide();
     $("#message_form").show();
-    var len = $("#message_form input").val().length;
-    $("#message_form input").focus().get(0).setSelectionRange(len, len);
+    var len = $("#message_form textarea").val().length;
+    $("#message_form textarea").focus().get(0).setSelectionRange(len, len);
 }
 
 function cancelEditMessage() {
