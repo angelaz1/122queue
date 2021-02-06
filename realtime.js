@@ -91,6 +91,38 @@ exports.help = function(entry_id, ta) {
     });
 };
 
+exports.request_update = function(entry_id) {
+    exports.seq = exports.seq + 1;
+    if(!sio) {
+        console.log("ERROR: Socket.io is not initialized yet");
+        return;
+    }
+    sio.emit("request-update", {
+        seq: exports.seq,
+        id: entry_id
+    });
+};
+
+exports.update = function(entry_id, updated_question) {
+    exports.seq = exports.seq + 1;
+    if(!sio) {
+        console.log("ERROR: Socket.io is not initialized yet");
+        return;
+    }
+    
+    // Students: only need to update seq
+    sio.to(student_room).emit("update-question", {
+        seq: exports.seq
+    });
+
+    // TAs: need to pass the updated question
+    sio.to(ta_room).emit("update-question", {
+        seq: exports.seq,
+        id: entry_id,
+        updated_question: updated_question
+    });
+};
+
 exports.cancel = function(entry_id, ta_id) {
     exports.seq = exports.seq + 1;
     if (!sio) {
@@ -143,5 +175,16 @@ exports.waittimes = function(times) {
     sio.emit("waittimes", {
         seq: exports.seq,
         times: times
+    });
+}
+
+// Takes in a list of tas to notify about their help time
+exports.notifytime = function(notif_tas) {
+    if (!sio) {
+        console.log("ERROR: Socket.io is not initialized yet");
+        return;
+    }
+    sio.to(ta_room).emit("notifytime", {
+        notif_tas: notif_tas
     });
 }
